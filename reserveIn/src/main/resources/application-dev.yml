@@ -1,0 +1,28 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ReserveStalk
+    username: root
+    password: admin123!
+  jpa:
+    hibernate:
+      ddl-auto: create
+      dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  jwt:
+    secret: O9HnV8bd+WBo6ZNFKqcKjDPAkCGXb6JWTc7Pv7IUWy4=
+server:
+  servlet:
+    context-path: /api
+logging:
+  level:
+    org:
+      springframework:
+#        security: debug
+        web: debug
