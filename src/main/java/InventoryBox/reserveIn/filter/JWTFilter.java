@@ -23,12 +23,13 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
 
-        if(authorization == null && !authorization.startsWith("Bearer")){
-            System.out.println("tocken null");
-            filterChain.doFilter(request,response);
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            System.out.println("token null");
+            filterChain.doFilter(request, response);
+            return;
         }
         System.out.println("authorization now");
-        String tocken = authorization.split("")[1];
+        String tocken = authorization.split(" ")[1];
         if (jwtUtil.isExpired(tocken)) {
             System.out.println("tocken exprired");
             filterChain.doFilter(request, response);

@@ -48,7 +48,7 @@ public class ProductService {
     @Transactional
     public ProductDto saveProduct(ProductDto productDto) {
         //ToDo 유저이름 가져오기
-        Users users = userRepository.findByUserId(productDto.getUserId()).orElseThrow(
+        Users users = userRepository.findByName(productDto.getName()).orElseThrow(
                 () -> new IllegalArgumentException("유저 없음"));
 
         Product product = Product.builder()

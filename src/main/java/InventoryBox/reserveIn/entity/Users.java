@@ -3,7 +3,6 @@ package InventoryBox.reserveIn.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,11 +16,27 @@ public class Users extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    private String userId;
-    private String username;
+    private String username;//userId
     private String name;
     private String password;
     private String email;
-    @Enumerated(EnumType.STRING)
     private String role;
+
+    @OneToMany(mappedBy = "users")
+    private List<Product> products;
+
+    @OneToMany(mappedBy = "users")
+    private List<WorkList> workLists;
+
+    @OneToMany(mappedBy = "users")
+    private List<StockTransaction> stockTransactions;
+
+//    @OneToMany(mappedBy = "stock")
+//    private List<Stock>
+
+    @OneToMany(mappedBy = "users")
+    private List<Reservation> reservation;
+
+
+
 }

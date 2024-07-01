@@ -18,16 +18,20 @@ public class JoinService {
 
     public UsersDto join(UsersDto usersDto) {
         Users user = new Users();
-        if(userRepository.existsByUserId(usersDto.getUserId())){
+        if(userRepository.existsByUsername(usersDto.getUsername())){
             throw new IllegalArgumentException("이미 존재하는 유저 아이디");
         }
         if(!usersDto.getPassword().equals(usersDto.getCheckPassword())){
             throw new BadCredentialsException("비밀번호 일치하지 않음");
         }
-        user.setUserId(usersDto.getUserId());
+        user.setUsername(usersDto.getUsername());
+        user.setName(usersDto.getName());
         user.setPassword(passwordEncoder.encode(usersDto.getPassword()));
         user.setUsername(usersDto.getUsername());
         user.setEmail(usersDto.getEmail());
+        user.setRole("USER");
+
+        user = userRepository.save(user);
         return UsersDto.toDto(user);
     }
 

@@ -9,7 +9,7 @@ spring:
     password: admin123!
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     properties:

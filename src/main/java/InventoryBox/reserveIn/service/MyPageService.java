@@ -16,15 +16,15 @@ public class MyPageService {
     private final PasswordEncoder passwordEncoder;
 
     //ToDo ID별 유저 조회
-    public UsersDto findByUsersById(String userId) {
-        return userRepository.findByUserId(userId).map(UsersDto::toDto).orElseThrow(
+    public UsersDto findByUsersById(String username) {
+        return userRepository.findByUsername(username).map(UsersDto::toDto).orElseThrow(
                 ()-> new IllegalArgumentException("유저 없음"));
     }
 
     //TODo 유저 정보 수정
     @Transactional
-    public UsersDto updateUser(UsersDto usersDto, String userId) {
-        Users users = userRepository.findByUserId(userId).orElseThrow(
+    public UsersDto updateUser(UsersDto usersDto, String username) {
+        Users users = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("유저 없음"));
         // 신규 입력한 비밀번호 재확인(password && checkPassword)
         if(!usersDto.getPassword().equals(usersDto.getCheckPassword())){
@@ -37,7 +37,7 @@ public class MyPageService {
 
     //ToDo 마이페이지 수정 전 기존 비밀번호 확인
     public boolean checkPassword(UsersDto usersDto) {
-        Users users = userRepository.findByUserId(usersDto.getUserId()).orElseThrow(
+        Users users = userRepository.findByUsername(usersDto.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저 없음"));
         return passwordEncoder.matches(usersDto.getOriginPassword(), users.getPassword());
 

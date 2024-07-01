@@ -8,7 +8,6 @@ import lombok.Data;
 @Builder
 public class UsersDto {
     private Long id;
-    private String userId;
     private String username;
     private String name;
     private String password;
@@ -21,7 +20,6 @@ public class UsersDto {
     public static UsersDto toDto(Users users) {
         return UsersDto.builder()
                 .id(users.getId())
-                .userId(users.getUserId())
                 .name(users.getName())
                 .username(users.getUsername())
                 .email(users.getEmail())
