@@ -13,7 +13,7 @@ public class CustomUserDetails implements UserDetails {
 
     private final Users users;
 
-    //사용자 권한을 반환, enum과 같은 문자열을 반환
+    //사용자 권한 반환, Role 값을 문자열로 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();

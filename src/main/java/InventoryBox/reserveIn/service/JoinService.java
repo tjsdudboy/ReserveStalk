@@ -3,9 +3,11 @@ package InventoryBox.reserveIn.service;
 import InventoryBox.reserveIn.dto.UsersDto;
 import InventoryBox.reserveIn.entity.Users;
 import InventoryBox.reserveIn.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JoinService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
+    @Transactional
     public UsersDto join(UsersDto usersDto) {
         Users user = new Users();
         if(userRepository.existsByUsername(usersDto.getUsername())){

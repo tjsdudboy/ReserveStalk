@@ -13,6 +13,9 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategory1AndCategory2(Pageable pageable, String category1, String category2);
+    Page<Product> findByCategory1 (Pageable pageable, String category1);
+    Page<Product> findByCategory2 (Pageable pageable, String category2);
+
 
     void deleteAllByIdIn(List<Long> id);
 }

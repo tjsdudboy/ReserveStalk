@@ -20,6 +20,7 @@ public class ProductDto {
     private Category1 category1;
     private Category2 category2;
     private LocalDateTime date;
+    private String username;
 
     public static ProductDto toDto(Product product) {
         return ProductDto.builder()
@@ -31,6 +32,7 @@ public class ProductDto {
                 .category1(product.getCategory1())
                 .category2(product.getCategory2())
                 .date(product.getCreateAt())
+                .username(product.getUsers().getUsername())
                 .build();
     }
 }

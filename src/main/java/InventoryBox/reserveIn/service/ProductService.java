@@ -1,5 +1,6 @@
 package InventoryBox.reserveIn.service;
 
+import InventoryBox.reserveIn.dto.CustomUserDetails;
 import InventoryBox.reserveIn.dto.ProductDto;
 import InventoryBox.reserveIn.entity.Product;
 import InventoryBox.reserveIn.entity.Users;
@@ -28,13 +29,45 @@ public class ProductService {
 
     //ToDo 제품 조회
     public Page<ProductDto> findProductById(Pageable pageable, String category1, String category2) {
-        Category1 cat1 = category1 != null ? Category1.valueOf(category1) : null;
-        Category2 cat2 = category2 != null ? Category2.valueOf(category2) : null;
+        Category1 cat1 = null;
+        Category2 cat2 =null;
+        if(category1 != null && !category1.isEmpty()){
+            try {
+                cat1 = Category1.valueOf(category1);
+            } catch (IllegalArgumentException e) {
+                cat1 = null;
+            }
+        }
+
+        if (category2 != null && category1.isEmpty()) {
+            try {
+                cat2 = Category2.valueOf(category2);
+            } catch (IllegalArgumentException e) {
+                cat2 = null;
+            }
+        }
+
+
+//        cat1 = category1 != null ? Category1.valueOf(category1) : null;
+//        cat2 = category2 != null ? Category2.valueOf(category2) : null;
 
         //cat1, cat2에 값이 있으면 해당 값을 조회, 하나라도 없으면 전체 조회
-        Page<Product> products = cat1 != null && cat2 != null ?
-                productRepository.findByCategory1AndCategory2(pageable, category1, category2) : productRepository.findAll(pageable);
 
+        Page<Product> products;
+        if (cat1 != null && cat2 != null) {
+            products = productRepository.findByCategory1AndCategory2(pageable, category1, category2);
+        } else if (cat1 != null) {
+            products = productRepository.findByCategory1(pageable, category1);
+        } else if (cat2 != null) {
+            products = productRepository.findByCategory2(pageable, category2);
+        } else {
+            products = productRepository.findAll(pageable);
+        }
+
+//        Page<Product> products = (cat1 != null && cat2 != null) ?
+//                productRepository.findByCategory1AndCategory2(pageable, category1, category2) :
+//                productRepository.findAll(pageable);
+//
         return products.map(ProductDto::toDto);
     }
 
@@ -45,11 +78,12 @@ public class ProductService {
     }
 
     //ToDo 제품 등록
-    @Transactional
-    public ProductDto saveProduct(ProductDto productDto) {
+//    @Transactional
+    public ProductDto saveProduct(ProductDto productDto, CustomUserDetails customUserDetails) {
         //ToDo 유저이름 가져오기
-        Users users = userRepository.findByName(productDto.getName()).orElseThrow(
-                () -> new IllegalArgumentException("유저 없음"));
+        String username = customUserDetails.getUsername();
+        Users users = userRepository.findByUsername(username).orElseThrow(
+                ()-> new IllegalArgumentException("유저 없음"));
 
         Product product = Product.builder()
                 .name(productDto.getName())

@@ -1,5 +1,6 @@
 package InventoryBox.reserveIn.controller;
 
+import InventoryBox.reserveIn.dto.CustomUserDetails;
 import InventoryBox.reserveIn.dto.ProductDto;
 import InventoryBox.reserveIn.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,8 +46,9 @@ public class ProductController {
 
     //제품 저장
     @PostMapping("/products")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto){
-        ProductDto product = productService.saveProduct(productDto);
+    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ProductDto product = productService.saveProduct(productDto, customUserDetails);
         log.info("제품 저장");
         return ResponseEntity.ok(product);
     }
@@ -61,6 +64,8 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+
     //제품 삭제
     @DeleteMapping("/product")
     public ResponseEntity<?> deleteProduct(@RequestBody List<Long> id){
