@@ -19,7 +19,8 @@ public class ProductDto {
     private int unitPrice;
     private Category1 category1;
     private Category2 category2;
-    private LocalDateTime date;
+    private LocalDateTime creatDate;
+    private LocalDateTime updateDate;
     private String username;
 
     public static ProductDto toDto(Product product) {
@@ -31,7 +32,8 @@ public class ProductDto {
                 .unitPrice(product.getUnitPrice())
                 .category1(product.getCategory1())
                 .category2(product.getCategory2())
-                .date(product.getCreateAt())
+                .creatDate(product.getCreateAt())
+                .updateDate(product.getUpdateAt())
                 .username(product.getUsers().getUsername())
                 .build();
     }
