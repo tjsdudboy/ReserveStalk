@@ -20,12 +20,15 @@ public class MyPageController {
     }
 
     // 마이페이지 수정 전 비밀번호 확인
-    @PostMapping("/checkPassword")
-    public ResponseEntity<String> verifyPassword(@RequestBody UsersDto usersDto){
-        boolean check = myPageService.checkPassword(usersDto);
+    @PostMapping("/checkPassword/{userId}")
+    public ResponseEntity<String> verifyPassword(@RequestBody UsersDto usersDto,
+                                                 @PathVariable String userId){
+        boolean check = myPageService.checkPassword(usersDto,userId);
         if(check){
+            System.out.println("성공데쓰까");
             return ResponseEntity.ok("비밀번호 일치");
         } else {
+            System.out.println("실패데쓰까");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호 일치하지 않음");
         }
     }

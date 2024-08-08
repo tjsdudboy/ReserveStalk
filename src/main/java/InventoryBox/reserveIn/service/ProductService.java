@@ -87,6 +87,7 @@ public class ProductService {
 
         Product product = Product.builder()
                 .name(productDto.getName())
+                .code(productDto.getCode())
                 .price(productDto.getPrice())
                 .unitPrice(productDto.getUnitPrice())
                 .description(productDto.getDescription())

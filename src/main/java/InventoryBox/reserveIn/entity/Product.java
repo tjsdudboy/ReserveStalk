@@ -18,8 +18,9 @@ public class Product extends BaseEntity {
     @Column(name = "product_id")
     private Long id;
 
-    private String name;
+    private String code;
 
+    private String name;
 
     private String description;
 

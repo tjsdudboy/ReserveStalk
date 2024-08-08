@@ -36,8 +36,8 @@ public class MyPageService {
     }
 
     //ToDo 마이페이지 수정 전 기존 비밀번호 확인
-    public boolean checkPassword(UsersDto usersDto) {
-        Users users = userRepository.findByUsername(usersDto.getUsername()).orElseThrow(
+    public boolean checkPassword(UsersDto usersDto, String userId) {
+        Users users = userRepository.findByUsername(userId).orElseThrow(
                 () -> new IllegalArgumentException("유저 없음"));
         return passwordEncoder.matches(usersDto.getOriginPassword(), users.getPassword());
 

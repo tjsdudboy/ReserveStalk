@@ -19,7 +19,11 @@ public class StockService {
                 .map(StockDto::toDto);
     }
 
+    //ToDo 재고조회
+
 
     //ToDo 카테고리별 재고 조회
 
+
+    //ToDo 초기 재고 등록
 }

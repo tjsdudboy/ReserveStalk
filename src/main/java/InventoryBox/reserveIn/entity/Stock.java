@@ -30,6 +30,7 @@ public class Stock extends BaseEntity {
 //    private Users users;
     private int currentStock;
 
+    private int safeStock;
 
     @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<StockTransaction> stockTransaction = new ArrayList<>();
