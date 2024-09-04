@@ -1,8 +1,6 @@
 package InventoryBox.reserveIn.repository;
 
 import InventoryBox.reserveIn.entity.Product;
-import InventoryBox.reserveIn.entity.category.Category1;
-import InventoryBox.reserveIn.entity.category.Category2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

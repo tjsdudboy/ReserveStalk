@@ -11,14 +11,22 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkList extends BaseEntity {
+public class ServiceCat extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String date;
-    private String content;
+
+    private String serName;
+    private int SerQuantity;
+
+    private int serPrice;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

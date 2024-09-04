@@ -1,8 +1,11 @@
 package InventoryBox.reserveIn.api;
 
+import InventoryBox.reserveIn.filter.CustomLogoutFilter;
 import InventoryBox.reserveIn.filter.JWTFilter;
 import InventoryBox.reserveIn.filter.LoginFilter;
+import InventoryBox.reserveIn.repository.RefreshRepository;
 import InventoryBox.reserveIn.util.JwtUtil;
+import InventoryBox.reserveIn.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,13 +15,14 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @Configuration
@@ -28,6 +32,8 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
+    private final TokenUtil tokenUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -39,8 +45,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override
@@ -63,16 +71,20 @@ public class SecurityConfig {
                 .formLogin(config -> config.disable())
                 .httpBasic(config -> config.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/join").permitAll()
+                        .requestMatchers("/", "/login", "/join", "/reissue").permitAll()
 //                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
                 //로그인 인증 필터 적용 JWTFilter에는 LoginFilter에서 생성자를 주입 받았기에 인자값이 필요
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil, refreshRepository, tokenUtil), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         return http.build();
     }

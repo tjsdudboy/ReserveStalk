@@ -1,4 +1,4 @@
-package InventoryBox.reserveIn.entity.category;
+package InventoryBox.reserveIn.entity.AllEnum.category;
 
 public enum Category1 {
     MANUFACTURES,

@@ -3,6 +3,7 @@ package InventoryBox.reserveIn.filter;
 import InventoryBox.reserveIn.dto.CustomUserDetails;
 import InventoryBox.reserveIn.entity.Users;
 import InventoryBox.reserveIn.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 //토큰 검증 필터 , OncePerRequestFilter -> 요청에 대해 한 번만 동작하는 필터
 @RequiredArgsConstructor
@@ -24,38 +26,64 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //요청에서 Authorization 키값을 가져옴
-        String authorization = request.getHeader("Authorization");
+        String ACtoken = request.getHeader("access");
+        if (ACtoken != null)
+            System.out.println("Access Token: " + ACtoken);
 
-        System.out.println("Authorization Header: " + authorization);
-
+        if (ACtoken == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         //Authorization 토큰이 null이거나 Bearer로 시작하는 것이 아닌것은 doFilter 를 통해 필터를 종료하고 다음 필터로 전달
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+//        if (authorization == null || !authorization.startsWith("Bearer ")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+        //ACtoken이 만료되면 예외 발생
+        try {
+            jwtUtil.isExpired(ACtoken);
+        } catch (ExpiredJwtException e) {
+            PrintWriter writer = response.getWriter();
+            writer.print("Accesstoken 만료");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         //토큰 소멸시간 검증, 종료된 토큰은 doFilter 를 통해 필터를 종료하고 다음 필터로 전달
-        String token = authorization.split(" ")[1];
-        System.out.println("Extracted Token: " + token);
+//        String token = authorization.split(" ")[1];
+//        System.out.println("Extracted Token: " + token);
+//
+//        if (jwtUtil.isExpired(token)) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+        String category = jwtUtil.getTokenCT(ACtoken);
 
-        if (jwtUtil.isExpired(token)) {
-            filterChain.doFilter(request, response);
+        if (!category.equals("access")) {
+            PrintWriter writer = response.getWriter();
+            writer.print("token이 없음");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         //해당 토큰에서 username, role 값을 추출
-        String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
+        String username = jwtUtil.getUsername(ACtoken);
+        String role = jwtUtil.getRole(ACtoken);
 
         System.out.println("Username: " + username);
         System.out.println("Role: " + role);
 
-        //user 값 초기화
         Users users = new Users();
         users.setUsername(username);
-        users.setPassword("tempPassword");
         users.setRole(role);
+        //user 값 초기화
+//        Users users = new Users();
+//        users.setUsername(username);
+//        users.setPassword("tempPassword");
+//        users.setRole(role);
 
         //userDetails 에 회원정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(users);

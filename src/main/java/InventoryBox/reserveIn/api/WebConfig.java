@@ -12,6 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000") // 프론트엔드 URL 추가
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .exposedHeaders("access") // 클라이언트가 'access' 헤더를 볼 수 있게 설정
                 .allowCredentials(true);
     }
 }

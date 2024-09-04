@@ -1,16 +1,16 @@
 package InventoryBox.reserveIn.entity;
 
-import InventoryBox.reserveIn.entity.category.Category1;
-import InventoryBox.reserveIn.entity.category.Category2;
+import InventoryBox.reserveIn.entity.AllEnum.category.Category1;
+import InventoryBox.reserveIn.entity.AllEnum.category.Category2;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Product extends BaseEntity {
 
     @Id

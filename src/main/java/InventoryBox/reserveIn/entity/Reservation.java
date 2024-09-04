@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -18,11 +19,22 @@ public class Reservation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reserve_id")
     private Long id;
+    private long quantity;
+    private String reserveAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;
+
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-    private Long quantity;
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    @ManyToOne
+    @JoinColumn(name = "serviceCat_id")
+    private ServiceCat serviceCat;
 }

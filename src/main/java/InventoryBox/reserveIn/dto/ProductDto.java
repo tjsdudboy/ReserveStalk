@@ -1,12 +1,11 @@
 package InventoryBox.reserveIn.dto;
 
 import InventoryBox.reserveIn.entity.Product;
-import InventoryBox.reserveIn.entity.category.Category1;
-import InventoryBox.reserveIn.entity.category.Category2;
+import InventoryBox.reserveIn.entity.AllEnum.category.Category1;
+import InventoryBox.reserveIn.entity.AllEnum.category.Category2;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

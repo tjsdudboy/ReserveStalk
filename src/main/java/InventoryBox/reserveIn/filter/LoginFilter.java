@@ -1,9 +1,11 @@
 package InventoryBox.reserveIn.filter;
 
-import InventoryBox.reserveIn.dto.CustomUserDetails;
+import InventoryBox.reserveIn.repository.RefreshRepository;
 import InventoryBox.reserveIn.util.JwtUtil;
+import InventoryBox.reserveIn.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
+    private final TokenUtil tokenUtil;
 
     //securityConfig에서 formLogin 방식을 disable 하였기에 LoginFilter에서 구현
 
@@ -33,6 +37,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
+
 
         //클라이언트 요청에서 username, password 가로챔
         String username = obtainUsername(request);
@@ -50,19 +55,28 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 인증 성공시 실행, JWT 토큰 발급(JwtUtil Class)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+//        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+//        //username 추출
+//        String username = customUserDetails.getUsername();
         //username 추출
-        String username = customUserDetails.getUsername();
+        String username = authentication.getName();
 
         //Role 값 추출
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username,role,3600000L);
-        response.setHeader("Authorization", "Bearer " + token); //Authorization 키값을 담음, value 는 토큰
+        tokenUtil.createTokenAndSetResponse(response,username,role);
+//        tokenUtil.createTokenAndSetResponse(response,username,role);
+//        String ACToken = jwtUtil.createJwt("access", username,role,60*10*1000L);
+//        String RFtoken = jwtUtil.createJwt("refresh", username,role, 24*60*60*1000L);
+//
+//        //응답
+//        response.setHeader("access", "access");
+//        response.addCookie(createCookie("refresh", "refresh"));
+//        response.setStatus(HttpStatus.OK.value());
+//        response.setHeader("Authorization", "Bearer " + token); //Authorization 키값을 담음, value 는 토큰
 
         System.out.println("로그인 성공");
     }
@@ -73,4 +87,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
         System.out.println("로그인 실패");
     }
+
+//    private Cookie createCookie(String key, String value) {
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(24*60*60);
+//        cookie.setSecure(true);//https 로 할경우
+//        cookie.setPath("/"); //쿠키 적용범위
+//        cookie.setHttpOnly(true); //클라이언트가 JS로 데이터 접근 불가하도록 적용
+//        return cookie;
+//    }
 }

@@ -6,19 +6,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chat extends BaseEntity{
+public class Employee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_id")
     private Long id;
-    private String message;
-    private LocalDateTime sentAt;
+    private String staffName;
+    private String staffNum;
+    private String nickName;
+    private String staffPhone;
+    private String hireDate;
+    private String StaffRole;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users users;
 }

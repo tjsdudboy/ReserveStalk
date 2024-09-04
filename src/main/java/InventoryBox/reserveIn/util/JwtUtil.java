@@ -2,6 +2,7 @@ package InventoryBox.reserveIn.util;
 
 import InventoryBox.reserveIn.dto.CustomUserDetails;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,10 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
 
+    public String getTokenCT(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
     //token 만료 여부 확인
     public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
@@ -48,8 +53,9 @@ public class JwtUtil {
 //    }
 
     // username, role, 만료시간을 받아 JWT 발급
-    public String createJwt(String username, String role, Long expiredMs) {
+    public String createJwt(String category, String username, String role, Long expiredMs) {
         return Jwts.builder()
+                .claim("category", category)
                 //claim-> payload에 포함된 값
                 .claim("username", username)
                 .claim("role", role)
@@ -58,5 +64,7 @@ public class JwtUtil {
                 .signWith(secretKey) //token 암포화 진행
                 .compact();
     }
+
+
 }
 

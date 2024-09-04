@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.catalina.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,19 +14,16 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Stock extends BaseEntity {
+public class Notice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inventory_id")
     private Long id;
+    private String noticeType;
+    private String subject;
+    private int views;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    private int currentStock;
-
-    private int safeStock;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users users;
 }
